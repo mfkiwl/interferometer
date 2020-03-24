@@ -20,6 +20,7 @@ reg [7:0] TXREG;
 uart_tx tx_block(
 	TX,
 	TXREG,
+	6'd8,
 	TXIF,
 	enable,
 	clk
@@ -31,8 +32,8 @@ always@(posedge TXIF) begin
 		else TXREG <= (tx_data[tidx*4+:4]-4'ha) | 8'h41;
 		tidx <= tidx+1;
 	end else begin
-		TXREG <= TOTAL_NIBBLES-1;
-		tidx <= 0;
+		TXREG <= 8'h0d;
+		tidx <= TOTAL_NIBBLES-1;
 	end
 end
 endmodule
