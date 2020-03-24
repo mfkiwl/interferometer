@@ -139,7 +139,7 @@ end
 
 CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY)) sample_clock_block
 (
-	sample_time/20,
+	sample_time/10,
 	sample_clk,
 	clk,
 	sample_clk_pulse,
@@ -165,7 +165,7 @@ generate
 			in[i],
 			adc_out[i*ADC_RESOLUTION+:ADC_RESOLUTION],
 			sample_received[i],
-			sample_clk
+			sample_clk_pulse
 		);
 		pulse_counter #(.RESOLUTION(RESOLUTION),.DATA_WIDTH(ADC_RESOLUTION)) counters_block (
 			adc_out[i*ADC_RESOLUTION+:ADC_RESOLUTION],
