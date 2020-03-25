@@ -18,7 +18,7 @@ parameter[0:0] INITIAL_SAMPLE_CLOCK_ENABLE = 1'b0;
 parameter[0:0] INITIAL_INTEGRATION_CLOCK_ENABLE = 1'b0;
 
 parameter CLK_FREQUENCY = 50000000;
-parameter RESOLUTION = 16;
+parameter RESOLUTION = 12;
 parameter NUM_INPUTS = 8;
 parameter ADC_RESOLUTION = 8;
 parameter BAUD_RATE = 230400;
