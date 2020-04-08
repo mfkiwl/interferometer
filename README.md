@@ -1,1 +1,1 @@
-# Verilog intensity correlator for CycloneII FPGAs
+# Verilog intensity correlator for Cyclone2 FPGAs
