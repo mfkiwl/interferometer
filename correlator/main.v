@@ -19,8 +19,9 @@ parameter[0:0] INITIAL_INTEGRATION_CLOCK_ENABLE = 1'b0;
 
 parameter CLK_FREQUENCY = 50000000;
 parameter RESOLUTION = 12;
+parameter MAX_DELAY = 500;
+parameter DELAY_LINES = MAX_DELAY|1;
 parameter NUM_INPUTS = 8;
-parameter ADC_RESOLUTION = 8;
 parameter BAUD_RATE = 230400;
 
 parameter BAUD_TIME = SECOND/BAUD_RATE;
@@ -30,16 +31,15 @@ parameter TOTAL_NIBBLES=NUM_CORRELATORS*RESOLUTION/4;
 
 output wire TX;
 input wire RX;
-input wire[NUM_INPUTS*ADC_RESOLUTION-1:0] in;
+input wire[NUM_INPUTS-1:0] in;
 input wire clk;
 output wire sample_clk_pulse;
 output wire integration_clk_pulse;
 
-wire [NUM_INPUTS-1:0] conversion_completed;
 wire [7:0] RXREG;
 wire RXIF;
-wire[(RESOLUTION*(NUM_INPUTS+NUM_CORRELATORS))-1:0] pulse_t;
-reg[(RESOLUTION*(NUM_INPUTS+NUM_CORRELATORS))-1:0] tx_data;
+wire[(RESOLUTION*NUM_INPUTS*DELAY_LINES*NUM_CORRELATORS)-1:0] pulse_t;
+reg[(RESOLUTION*NUM_INPUTS*DELAY_LINES*NUM_CORRELATORS)-1:0] tx_data;
 reg[7:0] ridx;
 
 wire uart_clk;
@@ -183,16 +183,17 @@ generate
 	genvar l;
 	genvar d;
 	for (i=0; i<NUM_INPUTS; i=i+1) begin : correlators_initial_block
-		pulse_counter #(.RESOLUTION(RESOLUTION),.DATA_WIDTH(ADC_RESOLUTION)) counters_block (
-			in[i*ADC_RESOLUTION+:ADC_RESOLUTION],
-			pulse_t[RESOLUTION*(NUM_CORRELATORS+i)+:RESOLUTION],
+		pulse_counter #(.RESOLUTION(RESOLUTION), .DATA_WIDTH(1)) counters_block (
+			in[i],
+			pulse_t[RESOLUTION*(NUM_CORRELATORS*DELAY_LINES+i)+:RESOLUTION],
 			sample_clk_pulse,
 			reset_correlator
 		);
 		for (j=i+1; j<NUM_INPUTS; j=j+1) begin : correlators_block
-			pulse_counter #(.RESOLUTION(RESOLUTION),.DATA_WIDTH(ADC_RESOLUTION)) correlator_block (
-				in[j*ADC_RESOLUTION+:ADC_RESOLUTION]*in[i*ADC_RESOLUTION+:ADC_RESOLUTION],
-				pulse_t[RESOLUTION*(i*(NUM_INPUTS+NUM_INPUTS-i-3)/2+j-1)+:RESOLUTION],
+			intensity_correlator #(.RESOLUTION(RESOLUTION), .MAX_DELAY(DELAY_LINES), .DATA_WIDTH(1)) correlator(
+				in[i],
+				in[j],
+				pulse_t[(RESOLUTION*DELAY_LINES)*(i*(NUM_INPUTS+(NUM_INPUTS-i-3))/2+j-1)+:RESOLUTION*DELAY_LINES],
 				sample_clk_pulse,
 				reset_correlator
 			);

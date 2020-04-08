@@ -7,7 +7,7 @@ module HSP17 (
 	enable
 );
 
-parameter RESOLUTION = 8;
+parameter RESOLUTION = 24;
 parameter CLK_FREQUENCY = 50000000;
 
 output wire [RESOLUTION-1:0] out;

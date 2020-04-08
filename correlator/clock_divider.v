@@ -20,7 +20,7 @@ module CLK_GEN
 	
 	output reg overflow;
 
-	reg [RESOLUTION-1:0] nanoseconds;
+	reg [63:0] nanoseconds;
 	
 	always @(posedge clk)
 	begin

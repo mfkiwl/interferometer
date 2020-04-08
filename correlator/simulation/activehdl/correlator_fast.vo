@@ -1,0 +1,204 @@
+// Copyright (C) 1991-2013 Altera Corporation
+// Your use of Altera Corporation's design tools, logic functions 
+// and other software and tools, and its AMPP partner logic 
+// functions, and any output files from any of the foregoing 
+// (including device programming or simulation files), and any 
+// associated documentation or information are expressly subject 
+// to the terms and conditions of the Altera Program License 
+// Subscription Agreement, Altera MegaCore Function License 
+// Agreement, or other applicable license agreement, including, 
+// without limitation, that your use is for the sole purpose of 
+// programming logic devices manufactured by Altera and sold by 
+// Altera or its authorized distributors.  Please refer to the 
+// applicable agreement for further details.
+
+// VENDOR "Altera"
+// PROGRAM "Quartus II 64-Bit"
+// VERSION "Version 13.0.0 Build 156 04/24/2013 SJ Web Edition"
+
+// DATE "04/03/2020 20:53:59"
+
+// 
+// Device: Altera EP2C5T144I8 Package TQFP144
+// 
+
+// 
+// This Verilog file should be used for Active-HDL (Verilog) only
+// 
+
+`timescale 1 ps/ 1 ps
+
+module correlator (
+	pulse_in,
+	pulse_out,
+	clki);
+input 	pulse_in;
+output 	pulse_out;
+input 	clki;
+
+// Design Ports Information
+// pulse_out	=>  Location: PIN_81,	 I/O Standard: 3.3-V LVTTL,	 Current Strength: 24mA
+// pulse_in	=>  Location: PIN_80,	 I/O Standard: 3.3-V LVTTL,	 Current Strength: Default
+// clki	=>  Location: PIN_17,	 I/O Standard: 3.3-V LVTTL,	 Current Strength: Default
+
+
+wire gnd;
+wire vcc;
+wire unknown;
+
+assign gnd = 1'b0;
+assign vcc = 1'b1;
+assign unknown = 1'bx;
+
+tri1 devclrn;
+tri1 devpor;
+tri1 devoe;
+// synopsys translate_off
+initial $sdf_annotate("correlator_v_fast.sdo");
+// synopsys translate_on
+
+wire \clki~combout ;
+wire \pulse_in~combout ;
+wire \pulse_out~reg0feeder_combout ;
+wire \pulse_out~reg0_regout ;
+
+
+// Location: PIN_17,	 I/O Standard: 3.3-V LVTTL,	 Current Strength: Default
+cycloneii_io \clki~I (
+	.datain(gnd),
+	.oe(gnd),
+	.outclk(gnd),
+	.outclkena(vcc),
+	.inclk(gnd),
+	.inclkena(vcc),
+	.areset(gnd),
+	.sreset(gnd),
+	.differentialin(gnd),
+	.linkin(gnd),
+	.devclrn(devclrn),
+	.devpor(devpor),
+	.devoe(devoe),
+	.combout(\clki~combout ),
+	.regout(),
+	.differentialout(),
+	.linkout(),
+	.padio(clki));
+// synopsys translate_off
+defparam \clki~I .input_async_reset = "none";
+defparam \clki~I .input_power_up = "low";
+defparam \clki~I .input_register_mode = "none";
+defparam \clki~I .input_sync_reset = "none";
+defparam \clki~I .oe_async_reset = "none";
+defparam \clki~I .oe_power_up = "low";
+defparam \clki~I .oe_register_mode = "none";
+defparam \clki~I .oe_sync_reset = "none";
+defparam \clki~I .operation_mode = "input";
+defparam \clki~I .output_async_reset = "none";
+defparam \clki~I .output_power_up = "low";
+defparam \clki~I .output_register_mode = "none";
+defparam \clki~I .output_sync_reset = "none";
+// synopsys translate_on
+
+// Location: PIN_80,	 I/O Standard: 3.3-V LVTTL,	 Current Strength: Default
+cycloneii_io \pulse_in~I (
+	.datain(gnd),
+	.oe(gnd),
+	.outclk(gnd),
+	.outclkena(vcc),
+	.inclk(gnd),
+	.inclkena(vcc),
+	.areset(gnd),
+	.sreset(gnd),
+	.differentialin(gnd),
+	.linkin(gnd),
+	.devclrn(devclrn),
+	.devpor(devpor),
+	.devoe(devoe),
+	.combout(\pulse_in~combout ),
+	.regout(),
+	.differentialout(),
+	.linkout(),
+	.padio(pulse_in));
+// synopsys translate_off
+defparam \pulse_in~I .input_async_reset = "none";
+defparam \pulse_in~I .input_power_up = "low";
+defparam \pulse_in~I .input_register_mode = "none";
+defparam \pulse_in~I .input_sync_reset = "none";
+defparam \pulse_in~I .oe_async_reset = "none";
+defparam \pulse_in~I .oe_power_up = "low";
+defparam \pulse_in~I .oe_register_mode = "none";
+defparam \pulse_in~I .oe_sync_reset = "none";
+defparam \pulse_in~I .operation_mode = "input";
+defparam \pulse_in~I .output_async_reset = "none";
+defparam \pulse_in~I .output_power_up = "low";
+defparam \pulse_in~I .output_register_mode = "none";
+defparam \pulse_in~I .output_sync_reset = "none";
+// synopsys translate_on
+
+// Location: LCCOMB_X2_Y6_N16
+cycloneii_lcell_comb \pulse_out~reg0feeder (
+// Equation(s):
+// \pulse_out~reg0feeder_combout  = \pulse_in~combout 
+
+	.dataa(vcc),
+	.datab(vcc),
+	.datac(vcc),
+	.datad(\pulse_in~combout ),
+	.cin(gnd),
+	.combout(\pulse_out~reg0feeder_combout ),
+	.cout());
+// synopsys translate_off
+defparam \pulse_out~reg0feeder .lut_mask = 16'hFF00;
+defparam \pulse_out~reg0feeder .sum_lutc_input = "datac";
+// synopsys translate_on
+
+// Location: LCFF_X2_Y6_N17
+cycloneii_lcell_ff \pulse_out~reg0 (
+	.clk(\clki~combout ),
+	.datain(\pulse_out~reg0feeder_combout ),
+	.sdata(gnd),
+	.aclr(gnd),
+	.sclr(gnd),
+	.sload(gnd),
+	.ena(vcc),
+	.devclrn(devclrn),
+	.devpor(devpor),
+	.regout(\pulse_out~reg0_regout ));
+
+// Location: PIN_81,	 I/O Standard: 3.3-V LVTTL,	 Current Strength: 24mA
+cycloneii_io \pulse_out~I (
+	.datain(\pulse_out~reg0_regout ),
+	.oe(vcc),
+	.outclk(gnd),
+	.outclkena(vcc),
+	.inclk(gnd),
+	.inclkena(vcc),
+	.areset(gnd),
+	.sreset(gnd),
+	.differentialin(gnd),
+	.linkin(gnd),
+	.devclrn(devclrn),
+	.devpor(devpor),
+	.devoe(devoe),
+	.combout(),
+	.regout(),
+	.differentialout(),
+	.linkout(),
+	.padio(pulse_out));
+// synopsys translate_off
+defparam \pulse_out~I .input_async_reset = "none";
+defparam \pulse_out~I .input_power_up = "low";
+defparam \pulse_out~I .input_register_mode = "none";
+defparam \pulse_out~I .input_sync_reset = "none";
+defparam \pulse_out~I .oe_async_reset = "none";
+defparam \pulse_out~I .oe_power_up = "low";
+defparam \pulse_out~I .oe_register_mode = "none";
+defparam \pulse_out~I .oe_sync_reset = "none";
+defparam \pulse_out~I .operation_mode = "output";
+defparam \pulse_out~I .output_async_reset = "none";
+defparam \pulse_out~I .output_power_up = "low";
+defparam \pulse_out~I .output_register_mode = "none";
+defparam \pulse_out~I .output_sync_reset = "none";
+// synopsys translate_on
+
+endmodule

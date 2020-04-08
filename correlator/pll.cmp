@@ -1,0 +1,8 @@
+	component pll is
+		port (
+			clki_clk    : in  std_logic := 'X'; -- clk
+			clko_clk    : out std_logic;        -- clk
+			reset_reset : in  std_logic := 'X'  -- reset
+		);
+	end component pll;
+

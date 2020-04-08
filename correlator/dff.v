@@ -5,10 +5,10 @@ module delay1 (
 	d,
 	q
 );
-parameter BPS=1;
+parameter RESOLUTION=1;
 input wire clk;
-input wire[BPS-1:0] d;
-output reg[BPS-1:0] q;
+input wire[RESOLUTION-1:0] d;
+output reg[RESOLUTION-1:0] q;
 
 always @ ( posedge clk)
 	begin

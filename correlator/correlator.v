@@ -1,8 +1,8 @@
 module correlator (
 	TX,
 	RX,
-	in,
-	clk,
+	pulse_in,
+	clki,
 	sample_clk_pulse,
 	integration_clk_pulse
 	);
@@ -10,23 +10,30 @@ module correlator (
 parameter SECOND = 1000000000;
 
 parameter CLK_FREQUENCY = 50000000;
-parameter RESOLUTION = 14;
-parameter NUM_INPUTS = 12;
-parameter ADC_RESOLUTION = 6;
 parameter BAUD_RATE = 230400;
+
+parameter RESOLUTION = 32;
+parameter NUM_INPUTS = 16;
+parameter MAX_DELAY = 250;
 
 output wire TX;
 input wire RX;
-input wire[NUM_INPUTS*ADC_RESOLUTION-1:0] in;
-input wire clk;
+input wire[NUM_INPUTS-1:0] pulse_in;
 output wire sample_clk_pulse;
 output wire integration_clk_pulse;
+input wire clki;
 
-main #(.CLK_FREQUENCY(CLK_FREQUENCY), .RESOLUTION(RESOLUTION), .NUM_INPUTS(NUM_INPUTS), .ADC_RESOLUTION(ADC_RESOLUTION), .BAUD_RATE(BAUD_RATE)) main_block(
+wire clk;
+pll pll_block(
+		clki,
+		clk
+	);
+	
+main #(.CLK_FREQUENCY(CLK_FREQUENCY), .RESOLUTION(RESOLUTION), .NUM_INPUTS(NUM_INPUTS), .BAUD_RATE(BAUD_RATE), .MAX_DELAY(MAX_DELAY)) main_block(
 	TX,
 	RX,
 	in,
-	clk,
+	clki,
 	sample_clk_pulse,
 	integration_clk_pulse
 );
