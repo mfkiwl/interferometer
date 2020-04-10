@@ -4,6 +4,7 @@ module main (
 	TX,
 	RX,
 	in,
+	bunch_out,
 	clk,
 	sample_clk_pulse,
 	integration_clk_pulse
@@ -11,8 +12,7 @@ module main (
 
 parameter SECOND = 1000000000;
 parameter INITIAL_ACTIVE_LINE = 0;
-parameter INITIAL_SAMPLE_TIME = 20;
-parameter INITIAL_INTEGRATION_TIME = 20000;
+parameter INITIAL_SAMPLE_TIME = 100;
 parameter[0:0] INITIAL_TRANSMIT_ENABLE = 1'b0;
 parameter[0:0] INITIAL_SAMPLE_CLOCK_ENABLE = 1'b0;
 parameter[0:0] INITIAL_INTEGRATION_CLOCK_ENABLE = 1'b0;
@@ -29,17 +29,21 @@ parameter NUM_CORRELATORS=NUM_INPUTS*(NUM_INPUTS-1)/2;
 parameter MAX_COUNT=(1<<RESOLUTION);
 parameter TOTAL_NIBBLES=NUM_CORRELATORS*RESOLUTION/4;
 
+parameter INITIAL_INTEGRATION_TIME = 10*RESOLUTION*DELAY_LINES*(NUM_CORRELATORS+NUM_INPUTS);
+
 output wire TX;
 input wire RX;
 input wire[NUM_INPUTS-1:0] in;
+output reg[NUM_CORRELATORS-1:0] bunch_out;
 input wire clk;
 output wire sample_clk_pulse;
 output wire integration_clk_pulse;
 
 wire [7:0] RXREG;
 wire RXIF;
-wire[(RESOLUTION*NUM_INPUTS*DELAY_LINES*NUM_CORRELATORS)-1:0] pulse_t;
-reg[(RESOLUTION*NUM_INPUTS*DELAY_LINES*NUM_CORRELATORS)-1:0] tx_data;
+wire[(RESOLUTION*DELAY_LINES)-1:0] pulse_t [0:NUM_CORRELATORS+NUM_INPUTS];
+wire[(RESOLUTION*DELAY_LINES*(NUM_CORRELATORS+NUM_INPUTS))-1:0] pulse_tmp;
+reg[(RESOLUTION*DELAY_LINES*(NUM_CORRELATORS+NUM_INPUTS))-1:0] tx_data;
 reg[7:0] ridx;
 
 wire uart_clk;
@@ -79,6 +83,13 @@ _sample_clock_enable <= INITIAL_SAMPLE_CLOCK_ENABLE;
 _integration_clock_enable <= INITIAL_INTEGRATION_CLOCK_ENABLE;
 end
 
+generate
+	genvar x;
+	for(x = 0; x < NUM_CORRELATORS+NUM_INPUTS; x=x+1) begin : pulse_tmp_assignment
+		assign pulse_tmp[x*RESOLUTION*DELAY_LINES+:RESOLUTION*DELAY_LINES] = pulse_t[x];
+	end
+endgenerate
+
 CLK_GEN #(.CLK_FREQUENCY(CLK_FREQUENCY)) uart_clock_block(
 	BAUD_TIME,
 	uart_clk,
@@ -96,7 +107,7 @@ TX_WORD #(.RESOLUTION(RESOLUTION*(NUM_CORRELATORS+NUM_INPUTS))) tx_block(
 	
 always@(negedge clk) begin
 	if(integration_clk_pulse) begin
-		tx_data <= pulse_t;
+		tx_data <= pulse_tmp;
 		reset_correlator <= 1;
 	end else
 		reset_correlator <= 0;
@@ -170,9 +181,9 @@ CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY)) sample_clock_block
 
 CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY)) integration_clock_block
 (
-	integration_time,
+	INITIAL_INTEGRATION_TIME,
 	integration_clk,
-	clk,
+	uart_clk,
 	integration_clk_pulse,
 	integration_clock_enable
 );
@@ -185,18 +196,21 @@ generate
 	for (i=0; i<NUM_INPUTS; i=i+1) begin : correlators_initial_block
 		pulse_counter #(.RESOLUTION(RESOLUTION), .DATA_WIDTH(1)) counters_block (
 			in[i],
-			pulse_t[RESOLUTION*(NUM_CORRELATORS*DELAY_LINES+i)+:RESOLUTION],
+			pulse_t[NUM_CORRELATORS+i],
 			sample_clk_pulse,
 			reset_correlator
 		);
 		for (j=i+1; j<NUM_INPUTS; j=j+1) begin : correlators_block
-			intensity_correlator #(.RESOLUTION(RESOLUTION), .MAX_DELAY(DELAY_LINES), .DATA_WIDTH(1)) correlator(
+			intensity_correlator #(.RESOLUTION(RESOLUTION), .MAX_DELAY(DELAY_LINES)) correlator(
 				in[i],
 				in[j],
-				pulse_t[(RESOLUTION*DELAY_LINES)*(i*(NUM_INPUTS+(NUM_INPUTS-i-3))/2+j-1)+:RESOLUTION*DELAY_LINES],
+				pulse_t[i*(NUM_INPUTS+(NUM_INPUTS-i-3))/2+j-1],
 				sample_clk_pulse,
 				reset_correlator
 			);
+			always @ (*) begin
+				bunch_out[i*(NUM_INPUTS+(NUM_INPUTS-i-3))/2+j-1] <= in[i]&in[j];
+			end
 		end
 	end
 endgenerate
