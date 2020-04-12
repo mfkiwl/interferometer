@@ -41,7 +41,5 @@ module intensity_correlator(
 			_reset <= 1;
 		else if(!out)
 			_reset <= 0;
-		else
-			_reset <= 0;
 	end
 endmodule

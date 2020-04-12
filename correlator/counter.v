@@ -20,10 +20,8 @@ module COUNTER (
 	always @(posedge clk)
 	begin
 		if(~_reset) begin
-			if (counter_out + increment < counter_max)
+			if (counter_out < counter_max)
 				counter_out <= counter_out + increment;
-			else
-				counter_out <= counter_max;
 		end else begin
 			counter_out <= 0;
 		end
@@ -33,8 +31,6 @@ module COUNTER (
 		if(reset)
 			_reset <= 1;
 		else if(!counter_out)
-			_reset <= 0;
-		else
 			_reset <= 0;
 	end
 		

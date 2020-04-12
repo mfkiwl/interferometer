@@ -10,7 +10,7 @@ module pll (
 
 	pll_altpll_0 altpll_0 (
 		.clk       (clki_clk),    //       inclk_interface.clk
-		.reset     (1'b1), // inclk_interface_reset.reset
+		.reset     (1'b0), // inclk_interface_reset.reset
 		.read      (),            //             pll_slave.read
 		.write     (),            //                      .write
 		.address   (),            //                      .address
