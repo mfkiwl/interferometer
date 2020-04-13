@@ -97,4 +97,5 @@ set_location_assignment PIN_44 -to pulse_in[12]
 set_location_assignment PIN_45 -to pulse_in[13]
 set_location_assignment PIN_47 -to pulse_in[14]
 set_location_assignment PIN_48 -to pulse_in[15]
+set_global_assignment -name GENERATE_SVF_FILE ON
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
