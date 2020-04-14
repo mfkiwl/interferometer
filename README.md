@@ -19,7 +19,7 @@
 + 0x1c: Start UART communication leaving correlation unchanged
 + 0x2c: Start correlation without UART communication
 + 0x3c: Start integration by enabling both UART and correlator
-+ 0x01: Upper 4 bits used to sequentially update the sampling time
++ 0x01: 4 most significant bits used to sequentially update the sampling time in nanoseconds
 + 0x0d: Commit changes (end of line)
 
 ###### The count of pulses and correlation comes with a 315-byte packet ended with a 0x0d character
