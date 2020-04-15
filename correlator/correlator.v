@@ -10,7 +10,7 @@ module correlator (
 parameter SECOND = 1000000000;
 
 parameter CLK_FREQUENCY = 50000000;
-parameter BAUD_RATE = 2000000;
+parameter BAUD_RATE = 230400;
 
 parameter RESOLUTION = 16;
 parameter NUM_INPUTS = 14;
