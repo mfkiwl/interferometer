@@ -22,9 +22,9 @@
 + 0x01: 4 most significant bits used to sequentially update the sampling time in nanoseconds
 + 0x0d: Commit changes (end of line)
 
-###### The count of pulses and correlation comes with a 420-byte packet ended with a 0x0d character
-+ byte 0-55: pulses from inputs 14-1 in descending order in 4-byte hexadecimal numbers
-+ byte 56-419: correlation between each input with others in 4-byte hexadecimal numbers
+###### The count of pulses and correlation comes with a 312-byte packet ended with a 0x0d character
++ byte 0-47: pulses from inputs 14-1 in descending order in 4-byte big-endian hexadecimal ASCII text
++ byte 48-311: correlation between each input with others in 4-byte big-endian hexadecimal ASCII text
 
 ###### The integration rate is the same as the packet rate
 
