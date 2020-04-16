@@ -13,7 +13,7 @@ parameter CLK_FREQUENCY = 50000000;
 parameter BAUD_RATE = 230400;
 
 parameter RESOLUTION = 16;
-parameter NUM_INPUTS = 14;
+parameter NUM_INPUTS = 12;
 parameter MAX_DELAY = 1;
 parameter NUM_CORRELATORS = NUM_INPUTS*(NUM_INPUTS-1)/2;
 

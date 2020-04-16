@@ -162,15 +162,12 @@ generate
 		pulse_counter #(.RESOLUTION(RESOLUTION), .DATA_WIDTH(1)) counters_block (
 			pulse_in[i],
 			pulse_t[(NUM_CORRELATORS*DELAY_LINES+i)*RESOLUTION+:RESOLUTION],
-			sample_clk_pulse,
 			reset_correlator
 		);
 		for (j=i+1; j<NUM_INPUTS; j=j+1) begin : correlators_block
-			intensity_correlator #(.RESOLUTION(RESOLUTION), .MAX_DELAY(DELAY_LINES)) correlator(
-				pulse_in[i],
-				pulse_in[j],
+			pulse_counter #(.RESOLUTION(RESOLUTION), .DATA_WIDTH(1)) counters_block (
+				pulse_in[i]&pulse_in[j],
 				pulse_t[(i*(NUM_INPUTS+(NUM_INPUTS-i-3))/2+j-1)*RESOLUTION*DELAY_LINES+:RESOLUTION*DELAY_LINES],
-				sample_clk_pulse,
 				reset_correlator
 			);
 		end
