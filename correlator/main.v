@@ -85,6 +85,9 @@ TX_WORD #(.RESOLUTION(RESOLUTION*(DELAY_LINES*NUM_CORRELATORS+NUM_INPUTS))) tx_b
 	transmit_enable
 );
 	
+wire reset_delayed;
+delay1 reset_delay(clk, reset_correlator, reset_delayed);
+
 always@(posedge reset_correlator) begin
 		tx_data <= pulse_t;
 end
@@ -156,19 +159,23 @@ CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY)) integration_clock_bloc
 generate
 	genvar i;
 	genvar j;
-	genvar l;
-	genvar d;
-	for (i=0; i<NUM_INPUTS; i=i+1) begin : correlators_initial_block
+	for (i=0; i<NUM_INPUTS; i=i+1) begin : counters_initial_block
 		pulse_counter #(.RESOLUTION(RESOLUTION), .DATA_WIDTH(1)) counters_block (
 			pulse_in[i],
 			pulse_t[(NUM_CORRELATORS*DELAY_LINES+i)*RESOLUTION+:RESOLUTION],
-			reset_correlator
+			reset_delayed
 		);
-		for (j=i+1; j<NUM_INPUTS; j=j+1) begin : correlators_block
+	end
+endgenerate
+generate
+	genvar l;
+	genvar d;
+	for (l=0; l<NUM_INPUTS; l=l+1) begin : correlators_initial_block
+		for (d=l+1; d<NUM_INPUTS; d=d+1) begin : correlators_block
 			pulse_counter #(.RESOLUTION(RESOLUTION), .DATA_WIDTH(1)) counters_block (
-				pulse_in[i]&pulse_in[j],
-				pulse_t[(i*(NUM_INPUTS+(NUM_INPUTS-i-3))/2+j-1)*RESOLUTION*DELAY_LINES+:RESOLUTION*DELAY_LINES],
-				reset_correlator
+				pulse_in[l]&pulse_in[d],
+				pulse_t[(l*(NUM_INPUTS+NUM_INPUTS-l-1)/2+d-l-1)*RESOLUTION*DELAY_LINES+:RESOLUTION*DELAY_LINES],
+				reset_delayed
 			);
 		end
 	end

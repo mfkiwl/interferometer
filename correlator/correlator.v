@@ -2,6 +2,7 @@ module correlator (
 	TX,
 	RX,
 	pulse_in,
+	pulse_out,
 	clki,
 	sample_clk_pulse,
 	integration_clk_pulse
@@ -20,16 +21,20 @@ parameter NUM_CORRELATORS = NUM_INPUTS*(NUM_INPUTS-1)/2;
 output wire TX;
 input wire RX;
 input wire[NUM_INPUTS-1:0] pulse_in;
+output wire[NUM_INPUTS-1:0] pulse_out;
 output wire sample_clk_pulse;
 output wire integration_clk_pulse;
 input wire clki;
 
 wire[NUM_INPUTS-1:0] in;
 
+delay1 #(.RESOLUTION(NUM_INPUTS)) delay(clki, ~pulse_in, in);
+assign pulse_out = ~in&~pulse_in;
+
 main #(.CLK_FREQUENCY(CLK_FREQUENCY), .RESOLUTION(RESOLUTION), .NUM_INPUTS(NUM_INPUTS), .BAUD_RATE(BAUD_RATE), .MAX_DELAY(MAX_DELAY)) main_block(
 	TX,
 	RX,
-	~pulse_in,
+	pulse_out,
 	clki,
 	sample_clk_pulse,
 	integration_clk_pulse

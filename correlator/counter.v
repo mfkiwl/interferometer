@@ -17,7 +17,7 @@ module COUNTER (
 	input wire reset;
 	assign overflow = (counter_out == counter_max);
 	reg _reset;
-	always @(posedge clk)
+	always @(posedge (_reset^clk))
 	begin
 		if(~_reset) begin
 			if (counter_out < counter_max)
