@@ -6,10 +6,9 @@ module pulse_counter (
 	reset
 );
 
-parameter DATA_WIDTH=1;
 parameter RESOLUTION = 32;
 
-input wire[DATA_WIDTH-1:0] in;
+input wire in;
 output wire [RESOLUTION-1:0] n_pulses;
 input wire reset;
 

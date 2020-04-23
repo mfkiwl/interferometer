@@ -6,23 +6,25 @@ module main (
 	pulse_in,
 	clk,
 	sample_clk_pulse,
-	reset_correlator
+	reset_correlator,
+	active_line
 );
 
 parameter SECOND = 1000000000;
+parameter CLK_FREQUENCY = 400000000;
+parameter BAUD_RATE = 230400;
+parameter BAUD_TIME = SECOND/BAUD_RATE;
+
 parameter INITIAL_ACTIVE_LINE = 0;
 parameter INITIAL_SAMPLE_TIME = 100;
 parameter[0:0] INITIAL_TRANSMIT_ENABLE = 1'b0;
 parameter[0:0] INITIAL_SAMPLE_CLOCK_ENABLE = 1'b0;
 
-parameter CLK_FREQUENCY = 50000000;
 parameter RESOLUTION = 8;
 parameter MAX_DELAY = 50;
 parameter DELAY_LINES = MAX_DELAY|1;
 parameter NUM_INPUTS = 8;
-parameter BAUD_RATE = 230400;
 
-parameter BAUD_TIME = SECOND/BAUD_RATE;
 parameter NUM_CORRELATORS=NUM_INPUTS*(NUM_INPUTS-1)/2;
 parameter MAX_COUNT=(1<<RESOLUTION);
 parameter TOTAL_NIBBLES=NUM_CORRELATORS*RESOLUTION/4;
@@ -39,18 +41,19 @@ output wire reset_correlator;
 wire [7:0] RXREG;
 wire RXIF;
 wire[(RESOLUTION*(DELAY_LINES*NUM_CORRELATORS+NUM_INPUTS))-1:0] pulse_t;
-reg[(RESOLUTION*(DELAY_LINES*NUM_CORRELATORS+NUM_INPUTS))-1:0] tx_data;
+reg[32+(RESOLUTION*(DELAY_LINES*NUM_CORRELATORS+NUM_INPUTS))-1:0] tx_data;
 reg[7:0] ridx;
+wire[NUM_INPUTS-1:0] delay_lines [0:DELAY_LINES-1];
 
 wire uart_clk;
 wire uart_clk_pulse;
 
-reg[63:0] active_line = INITIAL_ACTIVE_LINE;
+output reg[31:0] active_line = INITIAL_ACTIVE_LINE;
 reg[63:0] sample_time = INITIAL_SAMPLE_TIME;
 reg transmit_enable = INITIAL_TRANSMIT_ENABLE;
 reg sample_clock_enable = INITIAL_SAMPLE_CLOCK_ENABLE;
 
-reg[63:0] _active_line = INITIAL_ACTIVE_LINE;
+reg[31:0] _active_line = INITIAL_ACTIVE_LINE;
 reg[63:0] _sample_time = INITIAL_SAMPLE_TIME;
 reg _transmit_enable = INITIAL_TRANSMIT_ENABLE;
 reg _sample_clock_enable = INITIAL_SAMPLE_CLOCK_ENABLE;
@@ -70,7 +73,7 @@ initial begin
 	_sample_clock_enable <= INITIAL_SAMPLE_CLOCK_ENABLE;
 end
 
-CLK_GEN #(.CLK_FREQUENCY(CLK_FREQUENCY)) uart_clock_block(
+CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY)) uart_clock_block(
 	BAUD_TIME,
 	uart_clk,
 	clk,
@@ -78,18 +81,27 @@ CLK_GEN #(.CLK_FREQUENCY(CLK_FREQUENCY)) uart_clock_block(
 	1'b1
 );
 
-TX_WORD #(.RESOLUTION(RESOLUTION*(DELAY_LINES*NUM_CORRELATORS+NUM_INPUTS))) tx_block(
+TX_WORD #(.RESOLUTION(32+RESOLUTION*(DELAY_LINES*NUM_CORRELATORS+NUM_INPUTS))) tx_block(
 	TX,
 	tx_data,
 	uart_clk_pulse,
-	transmit_enable
+	1'd1
 );
 	
 wire reset_delayed;
 delay1 reset_delay(clk, reset_correlator, reset_delayed);
+integer k;
 
 always@(posedge reset_correlator) begin
-		tx_data <= pulse_t;
+	if(transmit_enable) begin
+		tx_data[7:0] = 8'h0;
+		tx_data[15:8] = DELAY_LINES;
+		tx_data[23:16] = NUM_INPUTS;
+		tx_data[31:24] = RESOLUTION;
+		tx_data[32+:(NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION] <= pulse_t;
+	end else
+		for (k=0;k<(NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION/4+8;k=k+1)
+			tx_data[k*4+:4] <= 4'h5;
 end
 
 uart_rx rx_block(
@@ -160,7 +172,7 @@ generate
 	genvar i;
 	genvar j;
 	for (i=0; i<NUM_INPUTS; i=i+1) begin : counters_initial_block
-		pulse_counter #(.RESOLUTION(RESOLUTION), .DATA_WIDTH(1)) counters_block (
+		pulse_counter #(.RESOLUTION(RESOLUTION)) counters_block (
 			pulse_in[i],
 			pulse_t[(NUM_CORRELATORS*DELAY_LINES+i)*RESOLUTION+:RESOLUTION],
 			reset_delayed
@@ -168,15 +180,21 @@ generate
 	end
 endgenerate
 generate
+	genvar f;
 	genvar l;
 	genvar d;
 	for (l=0; l<NUM_INPUTS; l=l+1) begin : correlators_initial_block
+		for(f=0; f<DELAY_LINES; f=f+1) begin : delay_initial_block
+			delay1(clk, pulse_in[l], delay_lines[f][l]);
+		end
 		for (d=l+1; d<NUM_INPUTS; d=d+1) begin : correlators_block
-			pulse_counter #(.RESOLUTION(RESOLUTION), .DATA_WIDTH(1)) counters_block (
-				pulse_in[l]&pulse_in[d],
-				pulse_t[(l*(NUM_INPUTS+NUM_INPUTS-l-1)/2+d-l-1)*RESOLUTION*DELAY_LINES+:RESOLUTION*DELAY_LINES],
-				reset_delayed
-			);
+			for(f=0; f<DELAY_LINES; f=f+1) begin : delay_initial_block2
+				pulse_counter #(.RESOLUTION(RESOLUTION)) counters_block (
+					delay_lines[f][l]&delay_lines[DELAY_LINES-1-f][d],
+					pulse_t[(l*(NUM_INPUTS+NUM_INPUTS-l-1)/2+d-l-1)*RESOLUTION*DELAY_LINES+f*RESOLUTION+:RESOLUTION],
+					reset_delayed
+				);
+			end
 		end
 	end
 endgenerate
