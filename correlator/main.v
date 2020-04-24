@@ -94,10 +94,10 @@ integer k;
 
 always@(posedge reset_correlator) begin
 	if(transmit_enable) begin
-		tx_data[7:0] = 8'h0;
-		tx_data[15:8] = DELAY_LINES;
-		tx_data[23:16] = NUM_INPUTS;
-		tx_data[31:24] = RESOLUTION;
+		tx_data[7:0] <= 8'h0;
+		tx_data[15:8] <= DELAY_LINES;
+		tx_data[23:16] <= NUM_INPUTS;
+		tx_data[31:24] <= RESOLUTION;
 		tx_data[32+:(NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION] <= pulse_t;
 	end else
 		for (k=0;k<(NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION/4+8;k=k+1)
@@ -185,7 +185,7 @@ generate
 	genvar d;
 	for (l=0; l<NUM_INPUTS; l=l+1) begin : correlators_initial_block
 		for(f=0; f<DELAY_LINES; f=f+1) begin : delay_initial_block
-			delay1(clk, pulse_in[l], delay_lines[f][l]);
+			delay1 delay_line(clk, pulse_in[l], delay_lines[f][l]);
 		end
 		for (d=l+1; d<NUM_INPUTS; d=d+1) begin : correlators_block
 			for(f=0; f<DELAY_LINES; f=f+1) begin : delay_initial_block2
