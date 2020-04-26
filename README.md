@@ -28,7 +28,7 @@
 + byte 4-5: hexadecimal inputs quantity
 + byte 6-7: hexadecimal delay lines quantity
 + byte 8-15: hexadecimal value of the active switch lines
-+ 16-63: pulses from inputs 12-1 in descending order in 4-byte big-endian hexadecimal ASCII text
++ byte 16-63: pulses from inputs 12-1 in descending order in 4-byte big-endian hexadecimal ASCII text
 + byte 63-327: correlation between each input with others in 4-byte big-endian hexadecimal ASCII text
 
 ###### The sampling rate is the same as the packet rate
