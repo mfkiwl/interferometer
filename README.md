@@ -1,6 +1,6 @@
 # Intensity correlator with Cyclone2 FPGAs
 
-#### This repository contains code for an intensity correlator for the Cyclone II
+#### This repository contains code for an intensity correlator with the Cyclone II
 ###### The board we suggest is the cheap Cyclone 2 dev board:
 
 ![alt text](https://github.com/iliaplatone/correlator/raw/master/pictures/devboard.jpg "Devboard")
