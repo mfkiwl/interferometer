@@ -20,8 +20,7 @@ reg [5:0] bit_count;
 parameter [5:0]
     IDLE   = 5'd0,
     DATA  = 5'd1,
-    STOP  = 5'd2,
-    DONE  = 5'd3;
+    STOP  = 5'd2;
 
 always@(posedge clk) begin
 	case(state)
@@ -43,11 +42,6 @@ always@(posedge clk) begin
 				state <= STOP;
 		end
 		STOP:
-		begin
-			rx_done <= 0;
-			state <= DONE;
-		end
-		DONE:
 		begin
 			rx_done <= 1;
 			state <= IDLE;
