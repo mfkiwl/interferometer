@@ -15,7 +15,7 @@ input wire enable;
 output reg done;
 input wire clk;
 
-reg signed [9:0] tidx;
+reg signed [31:0] tidx;
 wire TXIF;
 reg [7:0] TXREG;
 

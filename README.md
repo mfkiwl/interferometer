@@ -18,8 +18,9 @@
 ###### There is a set of commands to start integrations:
 + 0x1c: Start integration by enabling UART transmission
 + 0x01: 4 most significant bits used to sequentially update the integration time in nanoseconds
-+ 0x02: 4 most significant bits used to sequentially update the switch array stored in active_line
-+ 0x0d: Commit changes (end of line) or start integration
++ 0x02: select active line in the upper nibble
++ 0x03: activate leds int the upper nibble
+0x0d: Commit changes (end of line) or start integration
 
 ###### The count of pulses and correlation comes with a 328-byte packet ended with a 0x0d character
 ###### Each packet starts with a header with payload length indication, it is possible to change some parameters from the code

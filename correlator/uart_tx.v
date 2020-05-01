@@ -39,6 +39,13 @@ always@(posedge clk) begin
 				state <= IDLE;
 			end
 		end
+		STOP:
+		begin
+			tx_done <= 1;
+			tx <= 1'b1;
+			bit_count <= 4'd0;
+			state <= IDLE;
+		end
 		DATA:
 		begin
 			tx_done <= 0;
@@ -46,13 +53,6 @@ always@(posedge clk) begin
 			bit_count <= bit_count + 4'd1;
             if(bit_count == tx_bits-1)
 				state <= STOP;
-		end
-		STOP:
-		begin
-			tx_done <= 1;
-			tx <= 1'b1;
-			bit_count <= 4'd0;
-			state <= IDLE;
 		end
 	endcase
 end

@@ -33,18 +33,20 @@ always@(posedge clk) begin
                state <= DATA;
 			end
 		end
+		STOP:
+		begin
+			rx_done <= 1;
+			state <= IDLE;
+		end
 		DATA:
 		begin
 			rx_done <= 0;
 			dout[bit_count] <= rx;
 			bit_count <= bit_count + 4'd1;
-         if(bit_count == rx_bits-1)
-				state <= STOP;
-		end
-		STOP:
-		begin
-			rx_done <= 1;
-			state <= IDLE;
+			if(bit_count == rx_bits-1) begin
+				rx_done <= 1;
+				state <= IDLE;
+			end
 		end
 	endcase
 end

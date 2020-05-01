@@ -16,8 +16,6 @@ parameter PLL_FREQUENCY = 420000000;
 parameter BAUD_RATE = 230400;
 parameter BAUD_TIME = SECOND/BAUD_RATE;
 
-parameter INITIAL_ACTIVE_LINE = 0;
-
 parameter RESOLUTION = 8;
 parameter MAX_DELAY = 50;
 parameter DELAY_LINES = MAX_DELAY|1;
@@ -59,9 +57,8 @@ reg[63:0] timeleft = 0;
 wire sample_clk;
 
 initial begin
-	active_line <= INITIAL_ACTIVE_LINE;
-
-	_active_line <= INITIAL_ACTIVE_LINE;
+	active_line <= 0;
+	_active_line <= 0;
 end
 
 CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY)) uart_clock_block(
@@ -105,14 +102,12 @@ parameter[3:0]
 	RESET = 0,
 	SET_INTEGRATION_TIME = 1,
 	SET_ACTIVE_LINE = 2,
+	SET_LEDS = 3,
 	ENABLE_MODULES = 12,
 	COMMIT = 13;
 	
 always@(posedge RXIF) begin
 	if (RXREG[3:0] == RESET) begin
-		if (RXREG[7:4] == SET_ACTIVE_LINE) begin
-			_active_line <= INITIAL_ACTIVE_LINE;
-		end
 		if (RXREG[7:4] == SET_INTEGRATION_TIME) begin
 			_integration_time <= 0;
 		end
@@ -121,7 +116,6 @@ always@(posedge RXIF) begin
 		end
 		ridx <= 0;
 	end else if (RXREG[3:0] == COMMIT) begin
-		active_line <= _active_line;
 		integration_time <= _integration_time;
 		transmit_enable <= _transmit_enable;
 		ridx <= 0;
@@ -131,8 +125,9 @@ always@(posedge RXIF) begin
 	end else if (RXREG[3:0] == ENABLE_MODULES) begin
 		_transmit_enable <= RXREG[4];
 	end else if (RXREG[3:0] == SET_ACTIVE_LINE) begin
-		_active_line[ridx+:4] <= RXREG[7:4];
-		ridx <= ridx+3'd4;
+		_active_line <= RXREG[7:4];
+	end else if (RXREG[3:0] == SET_LEDS) begin
+		active_line[_active_line*2+:2] <= RXREG[5:4];
 	end
 end
 
