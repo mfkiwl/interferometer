@@ -16,11 +16,10 @@
 
 ###### The project runs at 50MHz and uses 230400 baud/second UART communication with the host
 ###### There is a set of commands to start integrations:
-+ 0x1c: Start integration by enabling UART transmission
-+ 0x01: 4 most significant bits used to sequentially update the integration time in nanoseconds
-+ 0x02: select active line in the upper nibble
-+ 0x03: activate leds int the upper nibble
-0x0d: Commit changes (end of line) or start integration
++ 0x1d: Start integration by enabling UART transmission
++ 0x0d: Start integration by disabling UART transmission
++ 0x01: select active line in the upper nibble
++ 0x02: activate leds using 4th and 5th bits
 
 ###### The count of pulses and correlation comes with a 328-byte packet ended with a 0x0d character
 ###### Each packet starts with a header with payload length indication, it is possible to change some parameters from the code
@@ -28,7 +27,7 @@
 + byte 2-3: hexadecimal sample size value
 + byte 4-5: hexadecimal inputs quantity
 + byte 6-7: hexadecimal delay lines quantity
-+ byte 8-15: hexadecimal value of the active switch lines
++ byte 8-15: hexadecimal value of the active led lines
 + byte 16-63: pulses from inputs 12-1 in descending order in 4-byte big-endian hexadecimal ASCII text
 + byte 63-327: correlation between each input with others in 4-byte big-endian hexadecimal ASCII text
 
