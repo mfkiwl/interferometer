@@ -1,16 +1,12 @@
 module uart_rx(
 	rx,
 	dout,
-	rx_bits,
 	rx_done,
 	clk
 );
 
-parameter MAX_WORD_SIZE = 8;
-
 input wire rx;
-output reg [MAX_WORD_SIZE-1:0] dout;
-input wire [5:0] rx_bits;
+output reg [7:0] dout;
 output reg rx_done;
 input wire clk;
 
@@ -43,7 +39,7 @@ always@(posedge clk) begin
 			rx_done <= 0;
 			dout[bit_count] <= rx;
 			bit_count <= bit_count + 4'd1;
-			if(bit_count == rx_bits-1) begin
+			if(bit_count == 7) begin
 				rx_done <= 1;
 				state <= IDLE;
 			end

@@ -7,14 +7,14 @@ module main (
 	clki,
 	clk,
 	integration_clk,
-	active_line
+	leds
 );
 
+parameter SHIFT = 0;
 parameter SECOND = 1000000000;
 parameter CLK_FREQUENCY = 12000000;
 parameter PLL_FREQUENCY = 420000000;
 parameter BAUD_RATE = 230400;
-parameter BAUD_TIME = SECOND/BAUD_RATE;
 
 parameter RESOLUTION = 8;
 parameter MAX_DELAY = 50;
@@ -25,14 +25,13 @@ parameter NUM_CORRELATORS=NUM_INPUTS*(NUM_INPUTS-1)/2;
 parameter MAX_COUNT=(1<<RESOLUTION);
 parameter TOTAL_NIBBLES=NUM_CORRELATORS*RESOLUTION/4;
 
-parameter INTEGRATION_TIME = BAUD_TIME*10*RESOLUTION*DELAY_LINES*(NUM_CORRELATORS+NUM_INPUTS);
-
 output wire TX;
 input wire RX;
 input wire[NUM_INPUTS-1:0] pulse_in;
 input wire clk;
 input wire clki;
 output wire integration_clk;
+output reg[31:0] leds;
 
 wire [7:0] RXREG;
 wire RXIF;
@@ -44,25 +43,10 @@ wire[NUM_INPUTS-1:0] delay_lines [0:DELAY_LINES-1];
 wire uart_clk;
 wire uart_clk_pulse;
 
-output reg[31:0] active_line = 0;
-reg[63:0] integration_time = 0;
 reg transmit_enable = 0;
+reg[3:0] active_line = 0;
 
-reg[31:0] _active_line = 0;
-reg[63:0] _integration_time = 0;
-reg _transmit_enable = 0;
-
-reg[63:0] timeleft = 0;
-
-wire sample_clk;
-
-initial begin
-	active_line <= 0;
-	_active_line <= 0;
-end
-
-CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY)) uart_clock_block(
-	BAUD_TIME,
+CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY), .FREQUENCY(BAUD_RATE)) uart_clock_block(
 	uart_clk,
 	clki,
 	uart_clk_pulse,
@@ -93,41 +77,22 @@ end
 uart_rx rx_block(
 	RX,
 	RXREG,
-	6'd8,
 	RXIF,
 	uart_clk_pulse
 );
 
 parameter[3:0]
-	RESET = 0,
-	SET_INTEGRATION_TIME = 1,
-	SET_ACTIVE_LINE = 2,
-	SET_LEDS = 3,
-	ENABLE_MODULES = 12,
-	COMMIT = 13;
+	SET_ACTIVE_LINE = 1,
+	SET_LEDS = 2,
+	ENABLE_CAPTURE = 13;
 	
 always@(posedge RXIF) begin
-	if (RXREG[3:0] == RESET) begin
-		if (RXREG[7:4] == SET_INTEGRATION_TIME) begin
-			_integration_time <= 0;
-		end
-		if (RXREG[7:4] == ENABLE_MODULES) begin
-			_transmit_enable <= 0;
-		end
-		ridx <= 0;
-	end else if (RXREG[3:0] == COMMIT) begin
-		integration_time <= _integration_time;
-		transmit_enable <= _transmit_enable;
-		ridx <= 0;
-	end else if (RXREG[3:0] == SET_INTEGRATION_TIME) begin
-		_integration_time[ridx+:4] <= RXREG[7:4];
-		ridx <= ridx+3'd4;
-	end else if (RXREG[3:0] == ENABLE_MODULES) begin
-		_transmit_enable <= RXREG[4];
+	if (RXREG[3:0] == ENABLE_CAPTURE) begin
+		transmit_enable <= RXREG[4];
 	end else if (RXREG[3:0] == SET_ACTIVE_LINE) begin
-		_active_line <= RXREG[7:4];
+		active_line <= RXREG[7:4];
 	end else if (RXREG[3:0] == SET_LEDS) begin
-		active_line[_active_line*2+:2] <= RXREG[5:4];
+		leds[active_line*2+:2] <= RXREG[5:4];
 	end
 end
 

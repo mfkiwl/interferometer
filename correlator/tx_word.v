@@ -22,7 +22,6 @@ reg [7:0] TXREG;
 uart_tx tx_block(
 	TX,
 	TXREG,
-	6'd8,
 	TXIF,
 	enable,
 	clk

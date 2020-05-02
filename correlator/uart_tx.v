@@ -1,17 +1,13 @@
 module uart_tx(
 	tx,
 	din,
-	tx_bits,
 	tx_done,
 	tx_start,
 	clk
 );
 
-parameter MAX_WORD_SIZE = 8;
-
 output reg tx;
-input wire [MAX_WORD_SIZE-1:0] din;
-input wire [5:0] tx_bits;
+input wire [7:0] din;
 output reg tx_done;
 input wire tx_start;
 input wire clk;
@@ -39,20 +35,20 @@ always@(posedge clk) begin
 				state <= IDLE;
 			end
 		end
+		DATA:
+		begin
+			tx_done <= 0;
+			tx <= din[bit_count];
+			bit_count <= bit_count + 4'd1;
+            if(bit_count == 7)
+				state <= STOP;
+		end
 		STOP:
 		begin
 			tx_done <= 1;
 			tx <= 1'b1;
 			bit_count <= 4'd0;
 			state <= IDLE;
-		end
-		DATA:
-		begin
-			tx_done <= 0;
-			tx <= din[bit_count];
-			bit_count <= bit_count + 4'd1;
-            if(bit_count == tx_bits-1)
-				state <= STOP;
 		end
 	endcase
 end
