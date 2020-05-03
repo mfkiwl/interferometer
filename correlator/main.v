@@ -38,7 +38,7 @@ wire RXIF;
 wire[(RESOLUTION*(DELAY_LINES*NUM_CORRELATORS+NUM_INPUTS))-1:0] pulse_t;
 reg[((NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION+64)-1:0] tx_data;
 reg[7:0] ridx;
-wire[NUM_INPUTS-1:0] delay_lines [0:DELAY_LINES-1];
+wire[0:DELAY_LINES-1] delay_lines [NUM_INPUTS-1:0];
 
 wire uart_clk;
 wire uart_clk_pulse;
@@ -107,14 +107,15 @@ generate
 		);
 	end
 endgenerate
+delay1 #(.RESOLUTION(NUM_INPUTS)) delay_line(clk, pulse_in, delay_lines[0]);
 generate
 	genvar f;
 	genvar l;
 	genvar d;
+	for(f=1; f<DELAY_LINES; f=f+1) begin : delay_initial_block
+		delay1 delay_line(clk, delay_lines[f-1], delay_lines[f]);
+	end
 	for (l=0; l<NUM_INPUTS; l=l+1) begin : correlators_initial_block
-		for(f=0; f<DELAY_LINES; f=f+1) begin : delay_initial_block
-			delay1 delay_line(clk, pulse_in[l], delay_lines[f][l]);
-		end
 		for (d=l+1; d<NUM_INPUTS; d=d+1) begin : correlators_block
 			for(f=0; f<DELAY_LINES; f=f+1) begin : delay_initial_block2
 				pulse_counter #(.RESOLUTION(RESOLUTION)) counters_block (
