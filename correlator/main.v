@@ -16,7 +16,7 @@ parameter CLK_FREQUENCY = 12000000;
 parameter PLL_FREQUENCY = 420000000;
 parameter BAUD_RATE = 230400;
 
-parameter RESOLUTION = 8;
+parameter RESOLUTION = 16;
 parameter MAX_DELAY = 50;
 parameter DELAY_LINES = MAX_DELAY|1;
 parameter NUM_INPUTS = 8;
@@ -38,7 +38,7 @@ wire RXIF;
 wire[(RESOLUTION*(DELAY_LINES*NUM_CORRELATORS+NUM_INPUTS))-1:0] pulse_t;
 reg[((NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION+64)-1:0] tx_data;
 reg[7:0] ridx;
-wire[0:DELAY_LINES-1] delay_lines [NUM_INPUTS-1:0];
+wire[NUM_INPUTS-1:0] delay_lines [0:DELAY_LINES-1];
 
 wire uart_clk;
 wire uart_clk_pulse;
@@ -107,20 +107,22 @@ generate
 		);
 	end
 endgenerate
-delay1 #(.RESOLUTION(NUM_INPUTS)) delay_line(clk, pulse_in, delay_lines[0]);
+
+assign delay_lines[0] = pulse_in;
 generate
-	genvar f;
+	genvar a;
+	genvar b;
 	genvar l;
 	genvar d;
-	for(f=1; f<DELAY_LINES; f=f+1) begin : delay_initial_block
-		delay1 delay_line(clk, delay_lines[f-1], delay_lines[f]);
+	for(d=1; d<DELAY_LINES; d=d+1) begin : delay_initial_block
+		delay1 #(.RESOLUTION(NUM_INPUTS)) delay_line(clk, delay_lines[d-1], delay_lines[d]);
 	end
-	for (l=0; l<NUM_INPUTS; l=l+1) begin : correlators_initial_block
-		for (d=l+1; d<NUM_INPUTS; d=d+1) begin : correlators_block
-			for(f=0; f<DELAY_LINES; f=f+1) begin : delay_initial_block2
+	for (a=0; a<NUM_INPUTS; a=a+1) begin : correlators_initial_block
+		for (b=a+1; b<NUM_INPUTS; b=b+1) begin : correlators_block
+			for(l=0; l<DELAY_LINES; l=l+1) begin : delay_initial_block2
 				pulse_counter #(.RESOLUTION(RESOLUTION)) counters_block (
-					delay_lines[f][l]&delay_lines[DELAY_LINES-1-f][d],
-					pulse_t[(l*(NUM_INPUTS+NUM_INPUTS-l-1)/2+d-l-1)*RESOLUTION*DELAY_LINES+f*RESOLUTION+:RESOLUTION],
+					delay_lines[l][a]&delay_lines[DELAY_LINES-1-l][b],
+					pulse_t[(a*(NUM_INPUTS+NUM_INPUTS-a-1)/2+b-a-1)*RESOLUTION*DELAY_LINES+l*RESOLUTION+:RESOLUTION],
 					reset_delayed
 				);
 			end
