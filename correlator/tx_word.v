@@ -1,23 +1,3 @@
-/****************************************************************************** 
-**  Verilog 12-channel intensity correlator
-**  Copyright (C) 2018-2020  Ilia Platone
-
-**  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU General Public License as published by
-**  the Free Software Foundation, either version 3 of the License, or
-**  (at your option) any later version.
-
-**  This program is distributed in the hope that it will be useful,
-**  but WITHOUT ANY WARRANTY; without even the implied warranty of
-**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**  GNU General Public License for more details.
-
-**  You should have received a copy of the GNU General Public License
-**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-******************************************************************************/
-
-`timescale 1 ns / 1 ps
-
 module TX_WORD(
 	TX,
 	tx_data,
@@ -26,6 +6,7 @@ module TX_WORD(
 	enable
 	);
 
+parameter SHIFT=4;
 parameter RESOLUTION=32;
 parameter TOTAL_NIBBLES=RESOLUTION/4;
 
@@ -39,7 +20,7 @@ reg signed [31:0] tidx;
 wire TXIF;
 reg [7:0] TXREG;
 
-uart_tx tx_block(
+uart_tx #(.SHIFT(SHIFT)) tx_block(
 	TX,
 	TXREG,
 	TXIF,

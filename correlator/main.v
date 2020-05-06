@@ -1,21 +1,3 @@
-/****************************************************************************** 
-**  Verilog 12-channel intensity correlator
-**  Copyright (C) 2018-2020  Ilia Platone
-
-**  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU General Public License as published by
-**  the Free Software Foundation, either version 3 of the License, or
-**  (at your option) any later version.
-
-**  This program is distributed in the hope that it will be useful,
-**  but WITHOUT ANY WARRANTY; without even the implied warranty of
-**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**  GNU General Public License for more details.
-
-**  You should have received a copy of the GNU General Public License
-**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-******************************************************************************/
-
 `timescale 1 ns / 1 ps
 
 module main (
@@ -28,16 +10,16 @@ module main (
 	leds
 );
 
-parameter SHIFT = 0;
+parameter SHIFT = 1;
 parameter SECOND = 1000000000;
 parameter CLK_FREQUENCY = 50000000;
 parameter PLL_FREQUENCY = 400000000;
 parameter BAUD_RATE = 230400;
 
 parameter RESOLUTION = 16;
-parameter MAX_DELAY = 50;
+parameter MAX_DELAY = 21;
 parameter DELAY_LINES = MAX_DELAY|1;
-parameter NUM_INPUTS = 8;
+parameter NUM_INPUTS = 4;
 
 parameter NUM_CORRELATORS=NUM_INPUTS*(NUM_INPUTS-1)/2;
 parameter MAX_COUNT=(1<<RESOLUTION);
@@ -64,14 +46,14 @@ wire uart_clk_pulse;
 reg transmit_enable = 0;
 reg[3:0] active_line = 0;
 
-CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY), .FREQUENCY(BAUD_RATE)) uart_clock_block(
+CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY), .FREQUENCY(BAUD_RATE<<SHIFT)) uart_clock_block(
 	uart_clk,
 	clki,
 	uart_clk_pulse,
 	1'b1
 );
 
-TX_WORD #(.RESOLUTION((NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION+64)) tx_block(
+TX_WORD #(.SHIFT(SHIFT), .RESOLUTION((NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION+64)) tx_block(
 	TX,
 	tx_data,
 	uart_clk_pulse,
@@ -92,7 +74,7 @@ always@(posedge integration_clk) begin
 	tx_data[(NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION+32+8+8+8+:8] <= 0;
 end
 
-uart_rx rx_block(
+uart_rx #(.SHIFT(SHIFT)) rx_block(
 	RX,
 	RXREG,
 	RXIF,

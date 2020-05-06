@@ -1,23 +1,3 @@
-/****************************************************************************** 
-**  Verilog 12-channel intensity correlator
-**  Copyright (C) 2018-2020  Ilia Platone
-
-**  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU General Public License as published by
-**  the Free Software Foundation, either version 3 of the License, or
-**  (at your option) any later version.
-
-**  This program is distributed in the hope that it will be useful,
-**  but WITHOUT ANY WARRANTY; without even the implied warranty of
-**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**  GNU General Public License for more details.
-
-**  You should have received a copy of the GNU General Public License
-**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-******************************************************************************/
-
-`timescale 1 ns / 1 ps
-
 module uart_tx(
 	tx,
 	din,
@@ -26,49 +6,41 @@ module uart_tx(
 	clk
 );
 
+parameter SHIFT=4;
+parameter WORD_WIDTH=8;
+parameter STOP_BITS=1;
+
 output reg tx;
-input wire [7:0] din;
+input wire [WORD_WIDTH-1:0] din;
 output reg tx_done;
 input wire tx_start;
 input wire clk;
 
-reg [4:0] state;
-reg [5:0] bit_count;
-
-parameter [5:0]
-    IDLE   = 5'd0,
-    DATA  = 5'd2,
-    STOP  = 5'd3;
+reg [5+SHIFT:0] bit_count = (WORD_WIDTH+STOP_BITS)<<SHIFT;
 
 always@(posedge clk) begin
-	case(state)
-		IDLE:
+	case(bit_count[SHIFT+:6])
+		WORD_WIDTH+STOP_BITS:
 		begin
 			tx_done <= 0;
 			if(tx_start) begin
-				bit_count <= 4'd0;
-				tx <= 1'b0;
-               state <= DATA;
+				bit_count <= 0;
+				tx <= 0;
 			end else begin
-				tx <= 1'b1;
-				bit_count <= 4'd0;
-				state <= IDLE;
+				tx <= 1;
 			end
 		end
-		DATA:
-		begin
-			tx_done <= 0;
-			tx <= din[bit_count];
-			bit_count <= bit_count + 4'd1;
-            if(bit_count == 7)
-				state <= STOP;
-		end
-		STOP:
+		WORD_WIDTH:
 		begin
 			tx_done <= 1;
-			tx <= 1'b1;
-			bit_count <= 4'd0;
-			state <= IDLE;
+			tx <= 1;
+			bit_count <= bit_count+1;
+		end
+		default:
+		begin
+			tx_done <= 0;
+			tx <= din[bit_count[SHIFT+:6]];
+			bit_count <= bit_count+1;
 		end
 	endcase
 end
