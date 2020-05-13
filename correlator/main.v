@@ -1,11 +1,30 @@
+/*
+    AHP Interferometer - a telescope array firmware
+    Copyright (C) 2020  Ilia Platone
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 `timescale 1 ns / 1 ps
 
 module main (
 	TX,
 	RX,
 	pulse_in,
-	clki,
 	clk,
+	clki,
 	integration_clk,
 	leds
 );
@@ -15,6 +34,7 @@ parameter SECOND = 1000000000;
 parameter CLK_FREQUENCY = 50000000;
 parameter PLL_FREQUENCY = 400000000;
 parameter BAUD_RATE = 230400;
+parameter BAUD_TIME = (SECOND/BAUD_RATE)>>SHIFT;
 
 parameter RESOLUTION = 16;
 parameter MAX_DELAY = 21;
@@ -45,8 +65,10 @@ wire uart_clk_pulse;
 
 reg transmit_enable = 0;
 reg[3:0] active_line = 0;
+reg[3:0] baud_rate = 0;
 
-CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY), .FREQUENCY(BAUD_RATE<<SHIFT)) uart_clock_block(
+CLK_GEN #(.RESOLUTION(64), .CLK_FREQUENCY(CLK_FREQUENCY)) uart_clock_block(
+	(BAUD_TIME>>baud_rate),
 	uart_clk,
 	clki,
 	uart_clk_pulse,
@@ -67,7 +89,7 @@ integer k;
 
 always@(posedge integration_clk) begin
 	tx_data[0+:(NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION] <= pulse_t;
-	tx_data[(NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION+:32] <= active_line;
+	tx_data[(NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION+:32] <= leds;
 	tx_data[(NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION+32+:8] <= DELAY_LINES;
 	tx_data[(NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION+32+8+:8] <= NUM_INPUTS;
 	tx_data[(NUM_CORRELATORS*DELAY_LINES+NUM_INPUTS)*RESOLUTION+32+8+8+:8] <= RESOLUTION;
@@ -84,6 +106,7 @@ uart_rx #(.SHIFT(SHIFT)) rx_block(
 parameter[3:0]
 	SET_ACTIVE_LINE = 1,
 	SET_LEDS = 2,
+	SET_BAUD_RATE = 3,
 	ENABLE_CAPTURE = 13;
 	
 always@(posedge RXIF) begin
@@ -93,6 +116,8 @@ always@(posedge RXIF) begin
 		active_line <= RXREG[7:4];
 	end else if (RXREG[3:0] == SET_LEDS) begin
 		leds[active_line*2+:2] <= RXREG[5:4];
+	end else if (RXREG[3:0] == SET_BAUD_RATE) begin
+		baud_rate <= RXREG[7:4];
 	end
 end
 
