@@ -29,7 +29,7 @@
 + byte 4-5: hexadecimal inputs quantity
 + byte 6-7: hexadecimal delay lines quantity
 + byte 8-15: hexadecimal value of the active led lines
-+ byte 16-lines#: pulses from all inputs input in descending order in big-endian hexadecimal ASCII text
++ byte 16-lines#: pulses from every input in descending order in big-endian hexadecimal ASCII text
 + byte lines#-baselines#: correlations between each input with others in big-endian hexadecimal ASCII text
 
 ###### The sampling rate is the same as the packet rate, the bandwidth is the same as the FPGA oscillator frequency
