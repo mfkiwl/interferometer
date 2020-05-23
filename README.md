@@ -21,14 +21,14 @@
 + 0x01: select active line in the upper nibble
 + 0x02: activate leds or power lines using 4th and 5th bits
 
-###### The count of pulses and correlation comes with a 328-byte packet ended with a 0x0d character
+###### The count of pulses and correlation comes with an ASCII packet string ended with a 0x0d character
 ###### Each packet starts with a header with payload length indication, it is possible to change some parameters from the code
 + byte 0-1: '00' ASCII characters (header start)
 + byte 2-3: hexadecimal sample size value
 + byte 4-5: hexadecimal inputs quantity
 + byte 6-7: hexadecimal delay lines quantity
 + byte 8-15: hexadecimal value of the active led lines
-+ byte 16-63: pulses from inputs 12-1 in descending order in 4-byte big-endian hexadecimal ASCII text
-+ byte 63-327: correlation between each input with others in 4-byte big-endian hexadecimal ASCII text
++ byte 16-lines#: pulses from all inputs input in descending order in big-endian hexadecimal ASCII text
++ byte lines#-baselines#: correlations between each input with others in big-endian hexadecimal ASCII text
 
-###### The sampling rate is the same as the packet rate
+###### The sampling rate is the same as the packet rate, the bandwidth is the same as the FPGA oscillator frequency
