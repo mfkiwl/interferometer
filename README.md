@@ -19,7 +19,7 @@
 + 0x1d: Start integration by enabling UART transmission
 + 0x0d: Start integration by disabling UART transmission
 + 0x01: select active line in the upper nibble
-+ 0x02: activate leds using 4th and 5th bits
++ 0x02: activate leds or power lines using 4th and 5th bits
 
 ###### The count of pulses and correlation comes with a 328-byte packet ended with a 0x0d character
 ###### Each packet starts with a header with payload length indication, it is possible to change some parameters from the code
