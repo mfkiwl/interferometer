@@ -17,9 +17,10 @@
 ###### The project runs at 50MHz and uses 57600 baud/second UART communication with the host
 ###### There is a set of commands to start integrations:
 + 0x1d: Start integration by enabling UART transmission
-+ 0x0d: Start integration by disabling UART transmission
++ 0x0d: Stop integration by disabling UART transmission
 + 0x01: select active line in the upper nibble
 + 0x02: activate leds or power lines using 4th and 5th bits
++ 0x03: change baud rate by shift the UART clock by the upper nibble
 
 ###### The count of pulses and correlation comes with an ASCII packet string ended with a 0x0d character
 ###### Each packet starts with a header with payload length indication, it is possible to change some parameters from the code
