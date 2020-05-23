@@ -14,7 +14,7 @@
 + External PCB for APD or PMT connectors and power supply
 + External PCB for delay lines
 
-###### The project runs at 50MHz and uses 230400 baud/second UART communication with the host
+###### The project runs at 50MHz and uses 57600 baud/second UART communication with the host
 ###### There is a set of commands to start integrations:
 + 0x1d: Start integration by enabling UART transmission
 + 0x0d: Start integration by disabling UART transmission
