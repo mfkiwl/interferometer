@@ -1,6 +1,6 @@
-# Intensity correlator with Cyclone2 FPGAs
+# Intensity correlator for Cyclone2 FPGAs
 
-#### This repository contains code for an intensity correlator with the Cyclone II
+#### This repository contains code of an intensity correlator for the Cyclone II
 ###### The board we suggest is the cheap Cyclone 2 dev board:
 
 ![alt text](https://github.com/iliaplatone/correlator/raw/master/pictures/devboard.jpg "Devboard")
@@ -17,20 +17,21 @@
 ###### The project runs at 50MHz and uses 57600 baud/second UART communication with the host initially
 ###### There is a set of commands to start integrations:
 + 0x1d: Start integration by enabling UART transmission
-+ 0x0d: Start integration by disabling UART transmission
++ 0x0d: Stop integration by disabling UART transmission
 + 0x01: select active line in the upper nibble
-+ 0x02: activate leds using 4th and 5th bits
++ 0x02: activate leds or power lines using 4th and 5th bits
 + 0x03: multiply rate with the upper nibble'th power of two
-+ 0x04: set the delay amount in clock cycles of the active line each nibble (32bit word)
++ 0x04: set the delay amount in clock cycles of the active sequentially (32bit word)
++ 0x0c: commit changes in delay value
 
-###### The count of pulses and correlation comes with a 328-byte packet ended with a 0x0d character
+###### The count of pulses and correlation comes with an ASCII packet string ended with a 0x0d character
 ###### Each packet starts with a header with payload length indication, it is possible to change some parameters from the code
 + byte 0-1: '00' ASCII characters (header start)
 + byte 2-3: hexadecimal sample size value
 + byte 4-5: hexadecimal inputs quantity
 + byte 6-7: hexadecimal delay lines quantity
 + byte 8-15: hexadecimal value of the clock speed
-+ byte 16-63: pulses from inputs 12-1 in descending order in 4-byte big-endian hexadecimal ASCII text
-+ byte 63-327: correlation between each input with others in 4-byte big-endian hexadecimal ASCII text
++ byte 16-lines#: pulses from every input in descending order in big-endian hexadecimal ASCII text
++ byte lines#-baselines#: correlations between each input with others in big-endian hexadecimal ASCII text
 
-###### The sampling rate is the same as the packet rate
+###### The sampling rate is the same as the packet rate, the bandwidth is the same as the FPGA oscillator frequency
