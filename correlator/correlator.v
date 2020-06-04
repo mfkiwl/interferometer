@@ -38,7 +38,7 @@ parameter SHIFT = 1;
 parameter MAX_DELAY = 4096;
 parameter RESOLUTION = 16;
 parameter NUM_INPUTS = 12;
-parameter MAX_JITTER = 1;
+parameter MAX_JITTER = 100;
 parameter NUM_CORRELATORS = NUM_INPUTS*(NUM_INPUTS-1)/2;
 
 output wire TX;

@@ -1,0 +1,14 @@
+With the Programmable Logic Devices (PLD) subsystem you can load a bitstream
+into a FPGA via JTAG.  Besides benefits in development it supports production
+of boards with NOR flashes connected to the FPGA. You can load a fjmem core
+into the FPGA and program (fast!) the flash through it.
+
+The following example flashes a NOR flash connected to the FGPA:
+
+  cable Turtelizer2 vid=0x0403 pid=0x6010
+  detect
+  pld load /path/to/fjmem.bit
+  initbus fjmem opcode=000010
+  detectflash 0
+  flashmem 0 /path/to/data.bin
+  pld reconfigure

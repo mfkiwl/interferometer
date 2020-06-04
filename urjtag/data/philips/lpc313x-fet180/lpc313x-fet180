@@ -1,0 +1,396 @@
+signal VSSE_IOC(1)
+signal VSSE_IOC(2)
+signal VSSE_IOC(3)
+signal VSSE_IOC(4)
+signal VSSE_IOC(5)
+signal VSSE_IOC(6)
+signal VSSE_IOC(7)
+signal VSSE_IOB(1)
+signal VSSE_IOB(2)
+signal VSSE_IOB(3)
+signal VSSE_IOB(4)
+signal VSSE_IOA(1)
+signal VSSE_IOA(2)
+signal VSSE_IOA(3)
+signal VSSE_IOA(4)
+signal VSSE_IOA(5)
+signal VSSE_IOA(6)
+signal VDDE_ESD
+signal VDDE_IOC(1)
+signal VDDE_IOC(2)
+signal VDDE_IOC(3)
+signal VDDE_IOC(4)
+signal VDDE_IOC(5)
+signal VDDE_IOC(6)
+signal VDDE_IOB(1)
+signal VDDE_IOB(2)
+signal VDDE_IOB(3)
+signal VDDE_IOB(4)
+signal VDDE_IOA(1)
+signal VDDE_IOA(2)
+signal VDDE_IOA(3)
+signal VDDE_IOA(4)
+signal VDDE_IOA(5)
+signal VSSI(1)
+signal VSSI(2)
+signal VSSI(3)
+signal VSSI(4)
+signal VSSI(5)
+signal VSSI(6)
+signal VDDI(1)
+signal VDDI(2)
+signal VDDI(3)
+signal VDDI(4)
+signal VDDI(5)
+signal JTAGSEL
+signal TMS
+signal SCAN_TDO
+signal TDI
+signal TCK
+signal TRST_N
+signal mI2STX_WS0
+signal mI2STX_DATA0
+signal mUART_CTS_N
+signal mNAND_RYBN3
+signal mNAND_RYBN2
+signal mNAND_RYBN1
+signal mGPIO10
+signal mGPIO8
+signal mGPIO7
+signal mGPIO5
+signal mLCD_DB_15
+signal mLCD_DB_14
+signal mLCD_DB_13
+signal mLCD_DB_12
+signal mLCD_DB_11
+signal mLCD_DB_10
+signal mLCD_DB_9
+signal mLCD_DB_8
+signal mLCD_DB_6
+signal mLCD_DB_5
+signal mLCD_DB_3
+signal mLCD_DB_1
+signal SPI_SCK
+signal SPI_MOSI
+signal SPI_MISO
+signal GPIO20
+signal GPIO19
+signal GPIO18
+signal GPIO17
+signal GPIO16
+signal GPIO15
+signal GPIO14
+signal GPIO13
+signal GPIO12
+signal GPIO11
+signal GPIO4
+signal GPIO3
+signal GPIO2
+signal GPIO0
+signal PWM_DATA
+signal I2SRX_WS1
+signal I2SRX_BCK1
+signal I2SRX_WS0
+signal EBI_D_15
+signal EBI_D_8
+signal EBI_D_7
+signal EBI_D_6
+signal EBI_D_5
+signal EBI_D_3
+signal EBI_D_2
+signal EBI_D_1
+signal EBI_D_0
+signal BUF_TMS
+signal BUF_TCK
+signal BUF_TRST_N
+signal ARM_TDO
+signal EBI_NWE
+signal EBI_A_0_ALE
+signal EBI_NRAS_BLOUT_1
+signal mUART_RTS_N
+signal mLCD_RW_WR
+signal mLCD_RS
+signal mLCD_E_RD
+signal mLCD_CSB
+signal NAND_NCS_2
+signal NAND_NCS_1
+signal NAND_NCS_0
+signal SPI_CS_OUT0
+signal CLK_256FS_O
+signal UART_TXD
+signal CLOCK_OUT
+signal I2STX_WS1
+signal I2STX_BCK1
+signal I2STX_DATA1
+signal EBI_DQM_0_NOE
+signal mLCD_DB_0
+signal NAND_NCS_3
+signal EBI_NCAS_BLOUT_0
+signal EBI_A_1_CLE
+signal mI2STX_BCK0
+signal mI2STX_CLK0
+signal SPI_CS_IN
+signal UART_RXD
+signal I2SRX_DATA1
+signal I2SRX_DATA0
+signal EBI_D_4
+signal GPIO1
+signal mNAND_RYBN0
+signal mLCD_DB_2
+signal mLCD_DB_4
+signal mLCD_DB_7
+signal mGPIO6
+signal mGPIO9
+signal I2SRX_BCK0
+signal EBI_D_14
+signal EBI_D_13
+signal EBI_D_12
+signal EBI_D_11
+signal EBI_D_10
+signal EBI_D_9
+signal VSSA12
+signal VDDA12(1)
+signal VDDA12(2)
+signal I2C_SCL1
+signal I2C_SDA1
+signal I2C_SCL0
+signal I2C_SDA0
+signal ADC10B_GPA3
+signal SYSCLK_O
+signal FFAST_IN
+signal FFAST_OUT
+signal VPP_B
+signal VPP_A
+signal USB_GNDA
+signal USB_VSSA_TERM
+signal USB_VSSA_REF
+signal USB_VDDA33_DRV
+signal USB_VDDA33
+signal USB_VDDA12_PLL
+signal USB_RREF
+signal USB_DM
+signal USB_DP
+signal USB_ID
+signal USB_VBUS
+signal ADC10B_GPA2
+signal ADC10B_GPA1
+signal ADC10B_GPA0
+signal ADC10B_GNDA
+signal ADC10B_VDDA33
+signal RSTIN_N
+instruction length 4
+register DIR 32
+register BSR 205
+register BYPASS 1
+instruction INTEST 0011 BSR
+instruction CLAMP 0100 BYPASS
+instruction PRELOAD 0010 BSR
+instruction EXTEST 0000 BSR
+instruction IDCODE 0001 DIR
+instruction SAMPLE/PRELOAD 0010 BSR
+instruction BYPASS 1111 BYPASS
+bit 204 B ? SYSCLK_O 203 1 Z
+bit 203 C 1 *
+bit 202 I ? I2C_SDA0
+bit 201 O 1 I2C_SDA0 201 1 Z
+bit 200 I ? I2C_SCL0
+bit 199 O 1 I2C_SCL0 199 1 Z
+bit 198 B ? I2C_SDA1 197 1 Z
+bit 197 C 1 *
+bit 196 B ? I2C_SCL1 195 1 Z
+bit 195 C 1 *
+bit 194 B ? EBI_D_9 193 1 Z
+bit 193 C 1 *
+bit 192 B ? EBI_D_10 191 1 Z
+bit 191 C 1 *
+bit 190 B ? EBI_D_11 189 1 Z
+bit 189 C 1 *
+bit 188 B ? EBI_D_12 187 1 Z
+bit 187 C 1 *
+bit 186 B ? EBI_D_13 185 1 Z
+bit 185 C 1 *
+bit 184 B ? EBI_D_14 183 1 Z
+bit 183 C 1 *
+bit 182 B ? I2SRX_BCK0 181 1 Z
+bit 181 C 1 *
+bit 180 B ? mGPIO9 179 1 Z
+bit 179 C 1 *
+bit 178 B ? mGPIO6 177 1 Z
+bit 177 C 1 *
+bit 176 B ? mLCD_DB_7 175 1 Z
+bit 175 C 1 *
+bit 174 B ? mLCD_DB_4 173 1 Z
+bit 173 C 1 *
+bit 172 B ? mLCD_DB_2 171 1 Z
+bit 171 C 1 *
+bit 170 B ? mNAND_RYBN0 169 1 Z
+bit 169 C 1 *
+bit 168 B ? GPIO1 167 1 Z
+bit 167 C 1 *
+bit 166 B ? EBI_D_4 165 1 Z
+bit 165 C 1 *
+bit 164 B ? I2SRX_DATA0 163 1 Z
+bit 163 C 1 *
+bit 162 B ? I2SRX_DATA1 161 1 Z
+bit 161 C 1 *
+bit 160 B ? UART_RXD 159 1 Z
+bit 159 C 1 *
+bit 158 B ? SPI_CS_IN 157 1 Z
+bit 157 C 1 *
+bit 156 B ? mI2STX_CLK0 155 1 Z
+bit 155 C 1 *
+bit 154 B ? mI2STX_BCK0 153 1 Z
+bit 153 C 1 *
+bit 152 B ? EBI_A_1_CLE 151 1 Z
+bit 151 C 1 *
+bit 150 B ? EBI_NCAS_BLOUT_0 149 1 Z
+bit 149 C 1 *
+bit 148 B ? NAND_NCS_3 147 1 Z
+bit 147 C 1 *
+bit 146 B ? mLCD_DB_0 145 1 Z
+bit 145 C 1 *
+bit 144 B ? EBI_DQM_0_NOE 143 1 Z
+bit 143 C 1 *
+bit 142 B ? I2STX_DATA1 141 1 Z
+bit 141 C 1 *
+bit 140 B ? I2STX_BCK1 139 1 Z
+bit 139 C 1 *
+bit 138 B ? I2STX_WS1 137 1 Z
+bit 137 C 1 *
+bit 136 O ? CLOCK_OUT
+bit 135 B ? UART_TXD 134 1 Z
+bit 134 C 1 *
+bit 133 B ? CLK_256FS_O 132 1 Z
+bit 132 C 1 *
+bit 131 B ? SPI_CS_OUT0 130 1 Z
+bit 130 C 1 *
+bit 129 B ? NAND_NCS_0 128 1 Z
+bit 128 C 1 *
+bit 127 B ? NAND_NCS_1 126 1 Z
+bit 126 C 1 *
+bit 125 B ? NAND_NCS_2 124 1 Z
+bit 124 C 1 *
+bit 123 B ? mLCD_CSB 122 1 Z
+bit 122 C 1 *
+bit 121 B ? mLCD_E_RD 120 1 Z
+bit 120 C 1 *
+bit 119 B ? mLCD_RS 118 1 Z
+bit 118 C 1 *
+bit 117 B ? mLCD_RW_WR 116 1 Z
+bit 116 C 1 *
+bit 115 B ? mUART_RTS_N 114 1 Z
+bit 114 C 1 *
+bit 113 B ? EBI_NRAS_BLOUT_1 112 1 Z
+bit 112 C 1 *
+bit 111 B ? EBI_A_0_ALE 110 1 Z
+bit 110 C 1 *
+bit 109 B ? EBI_NWE 108 1 Z
+bit 108 C 1 *
+bit 107 O 1 *
+bit 106 O 1 *
+bit 105 O 1 *
+bit 104 O 1 *
+bit 103 B ? EBI_D_0 102 1 Z
+bit 102 C 1 *
+bit 101 B ? EBI_D_1 100 1 Z
+bit 100 C 1 *
+bit 99 B ? EBI_D_2 98 1 Z
+bit 98 C 1 *
+bit 97 B ? EBI_D_3 96 1 Z
+bit 96 C 1 *
+bit 95 B ? EBI_D_5 94 1 Z
+bit 94 C 1 *
+bit 93 B ? EBI_D_6 92 1 Z
+bit 92 C 1 *
+bit 91 B ? EBI_D_7 90 1 Z
+bit 90 C 1 *
+bit 89 B ? EBI_D_8 88 1 Z
+bit 88 C 1 *
+bit 87 B ? EBI_D_15 86 1 Z
+bit 86 C 1 *
+bit 85 B ? I2SRX_WS0 84 1 Z
+bit 84 C 1 *
+bit 83 B ? I2SRX_BCK1 82 1 Z
+bit 82 C 1 *
+bit 81 B ? I2SRX_WS1 80 1 Z
+bit 80 C 1 *
+bit 79 B ? PWM_DATA 78 1 Z
+bit 78 C 1 *
+bit 77 B ? GPIO0 76 1 Z
+bit 76 C 1 *
+bit 75 B ? GPIO2 74 1 Z
+bit 74 C 1 *
+bit 73 B ? GPIO3 72 1 Z
+bit 72 C 1 *
+bit 71 B ? GPIO4 70 1 Z
+bit 70 C 1 *
+bit 69 B ? GPIO11 68 1 Z
+bit 68 C 1 *
+bit 67 B ? GPIO12 66 1 Z
+bit 66 C 1 *
+bit 65 B ? GPIO13 64 1 Z
+bit 64 C 1 *
+bit 63 B ? GPIO14 62 1 Z
+bit 62 C 1 *
+bit 61 B ? GPIO15 60 1 Z
+bit 60 C 1 *
+bit 59 B ? GPIO16 58 1 Z
+bit 58 C 1 *
+bit 57 B ? GPIO17 56 1 Z
+bit 56 C 1 *
+bit 55 B ? GPIO18 54 1 Z
+bit 54 C 1 *
+bit 53 B ? GPIO19 52 1 Z
+bit 52 C 1 *
+bit 51 B ? GPIO20 50 1 Z
+bit 50 C 1 *
+bit 49 B ? SPI_MISO 48 1 Z
+bit 48 C 1 *
+bit 47 B ? SPI_MOSI 46 1 Z
+bit 46 C 1 *
+bit 45 B ? SPI_SCK 44 1 Z
+bit 44 C 1 *
+bit 43 B ? mLCD_DB_1 42 1 Z
+bit 42 C 1 *
+bit 41 B ? mLCD_DB_3 40 1 Z
+bit 40 C 1 *
+bit 39 B ? mLCD_DB_5 38 1 Z
+bit 38 C 1 *
+bit 37 B ? mLCD_DB_6 36 1 Z
+bit 36 C 1 *
+bit 35 B ? mLCD_DB_8 34 1 Z
+bit 34 C 1 *
+bit 33 B ? mLCD_DB_9 32 1 Z
+bit 32 C 1 *
+bit 31 B ? mLCD_DB_10 30 1 Z
+bit 30 C 1 *
+bit 29 B ? mLCD_DB_11 28 1 Z
+bit 28 C 1 *
+bit 27 B ? mLCD_DB_12 26 1 Z
+bit 26 C 1 *
+bit 25 B ? mLCD_DB_13 24 1 Z
+bit 24 C 1 *
+bit 23 B ? mLCD_DB_14 22 1 Z
+bit 22 C 1 *
+bit 21 B ? mLCD_DB_15 20 1 Z
+bit 20 C 1 *
+bit 19 B ? mGPIO5 18 1 Z
+bit 18 C 1 *
+bit 17 B ? mGPIO7 16 1 Z
+bit 16 C 1 *
+bit 15 B ? mGPIO8 14 1 Z
+bit 14 C 1 *
+bit 13 B ? mGPIO10 12 1 Z
+bit 12 C 1 *
+bit 11 B ? mNAND_RYBN1 10 1 Z
+bit 10 C 1 *
+bit 9 B ? mNAND_RYBN2 8 1 Z
+bit 8 C 1 *
+bit 7 B ? mNAND_RYBN3 6 1 Z
+bit 6 C 1 *
+bit 5 B ? mUART_CTS_N 4 1 Z
+bit 4 C 1 *
+bit 3 B ? mI2STX_DATA0 2 1 Z
+bit 2 C 1 *
+bit 1 B ? mI2STX_WS0 0 1 Z
+bit 0 C 1 *
