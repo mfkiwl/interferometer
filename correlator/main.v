@@ -123,7 +123,7 @@ always@(posedge RXIF) begin
 	end else if (RXREG[3:0] == SET_LEDS) begin
 		leds[index*2+:2] <= RXREG[5:4];
 	end else if (RXREG[3:0] == SET_DELAY) begin
-		delay[index][ridx*4+:4] <= RXREG[5:4];
+		delay[index][ridx+:4] <= RXREG[5:4];
 		ridx <= ridx+4;
 	end else if (RXREG[3:0] == SET_BAUD_RATE) begin
 		baud_rate <= RXREG[7:4];
