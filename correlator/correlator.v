@@ -25,7 +25,8 @@ module correlator (
 	pulse_in,
 	pulse_out,
 	integration_clk_pulse,
-	active_line
+	active_line,
+	clki
 	);
 
 parameter SECOND = 1000000000;
@@ -34,7 +35,7 @@ parameter PLL_FREQUENCY = 400000000;
 parameter BAUD_RATE = 57600;
 parameter SHIFT = 1;
 
-parameter MAX_DELAY = 1024;
+parameter MAX_DELAY = 4096;
 parameter RESOLUTION = 16;
 parameter NUM_INPUTS = 12;
 parameter MAX_JITTER = 1;

@@ -150,12 +150,12 @@ generate
 	genvar d;
 	genvar f;
 	genvar s;
-	for (a=0; a<NUM_INPUTS; a=a+1) begin : correlators_initial_block
-		for(f=0; f<MAX_DELAY; f=f+2000) begin : delay_iteration_block
-			for(d=f; d<f+2000 && d<MAX_DELAY; d=d+1) begin : delay_initial_block
-				delay1 #(.RESOLUTION(NUM_INPUTS)) delay_line(clk, delay_lines[d], delay_lines[d+1]);
-			end
+	for(f=0; f<MAX_DELAY-1; f=f+2000) begin : delay_iteration_block
+		for(d=f; d<MAX_DELAY-1 && d<f+1999; d=d+1) begin : delay_initial_block
+			delay1 #(.RESOLUTION(NUM_INPUTS)) delay_line(clk, delay_lines[d], delay_lines[d+1]);
 		end
+	end
+	for (a=0; a<NUM_INPUTS; a=a+1) begin : correlators_initial_block
 		assign jitter_lines[0][a] = delay_lines[delay[a]][a];
 		for(s=1; s<JITTER_LINES; s=s+1) begin : jitter_initial_block
 			delay1 #(.RESOLUTION(1)) jitter_line(clk, jitter_lines[s-1][a], jitter_lines[s][a]);
