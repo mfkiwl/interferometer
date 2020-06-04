@@ -156,7 +156,7 @@ generate
 		end
 	end
 	for (a=0; a<NUM_INPUTS; a=a+1) begin : correlators_initial_block
-		assign jitter_lines[0][a] = delay_lines[delay[a]][a];
+		delay1 #(.RESOLUTION(1)) jitter_line(clk, delay_lines[delay[a]][a], jitter_lines[0][a]);
 		for(s=1; s<JITTER_LINES; s=s+1) begin : jitter_initial_block
 			delay1 #(.RESOLUTION(1)) jitter_line(clk, jitter_lines[s-1][a], jitter_lines[s][a]);
 		end
