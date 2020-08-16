@@ -23,45 +23,55 @@ module correlator (
 	TX,
 	RX,
 	pulse_in,
-	pulse_out,
+	pwr_leds,
+	leds,
 	integration_clk_pulse,
 	active_line,
 	clki
 	);
 
 parameter SECOND = 1000000000;
-parameter CLK_FREQUENCY = 50000000;
-parameter PLL_FREQUENCY = 400000000;
+parameter CLK_FREQUENCY = 14800000;
+parameter PLL_FREQUENCY = 448000000;
+
 parameter BAUD_RATE = 57600;
 parameter SHIFT = 1;
 
-parameter MAX_DELAY = 4096;
-parameter RESOLUTION = 16;
-parameter NUM_INPUTS = 12;
-parameter MAX_JITTER = 100;
+parameter MAX_DELAY = 256;
+parameter RESOLUTION = 20;
+parameter NUM_INPUTS = 8;
+parameter MAX_JITTER = 200;
 parameter NUM_CORRELATORS = NUM_INPUTS*(NUM_INPUTS-1)/2;
 
 output wire TX;
 input wire RX;
 input wire[NUM_INPUTS-1:0] pulse_in;
-output wire[NUM_INPUTS-1:0] pulse_out;
+output reg[NUM_INPUTS-1:0] pwr_leds;
+output reg[7:0] leds;
 output wire integration_clk_pulse;
 output wire[31:0] active_line;
 input wire clki;
-wire clk;
+wire clko;
 wire[NUM_INPUTS-1:0] in;
+wire[NUM_INPUTS-1:0] out;
 
-pll pll_block (clki, clk);
+pll pll_block (clki, pll_clk);
 
-delay1 #(.RESOLUTION(NUM_INPUTS)) delay(clk, ~pulse_in, in);
-assign pulse_out = ~in&~pulse_in;
+delay1 #(.RESOLUTION(NUM_INPUTS)) delay(clko, ~pulse_in, in);
+assign out = ~in&~pulse_in;
+
+always@(*) begin
+	pwr_leds <= 8'hff;
+	leds <= 8'hff;
+end
 
 main #(.CLK_FREQUENCY(CLK_FREQUENCY), .PLL_FREQUENCY(PLL_FREQUENCY), .SHIFT(SHIFT), .RESOLUTION(RESOLUTION), .NUM_INPUTS(NUM_INPUTS), .BAUD_RATE(BAUD_RATE), .MAX_JITTER(MAX_JITTER), .MAX_DELAY(MAX_DELAY)) main_block(
 	TX,
 	RX,
-	pulse_out,
-	clk,
+	out,
+	pll_clk,
 	clki,
+	clko,
 	integration_clk_pulse,
 	active_line
 );
