@@ -27,7 +27,7 @@ module uart_tx(
 	clk
 );
 
-parameter SHIFT=1;
+parameter SHIFT=0;
 parameter WORD_WIDTH=8;
 parameter STOP_BITS=1;
 

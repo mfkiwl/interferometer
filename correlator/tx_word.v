@@ -51,8 +51,10 @@ uart_tx #(.SHIFT(SHIFT)) tx_block(
 
 always@(posedge TXIF) begin
 	if(tidx>=0) begin
-		if(tx_data[tidx*4+:4] < 4'ha) TXREG <= tx_data[tidx*4+:4] | 8'h30;
-		else TXREG <= (tx_data[tidx*4+:4]-4'ha) | 8'h41;
+		if(tx_data[tidx*4+:4] > 4'h9)
+			TXREG <= 8'h3f + tx_data[tidx*4+:3];
+		else
+			TXREG <= 8'h30 + tx_data[tidx*4+:4];
 		tidx <= tidx-1;
 		done <= 0;
 	end else begin

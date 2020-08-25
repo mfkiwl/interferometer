@@ -22,7 +22,6 @@
 module COUNTER (
 		counter_max,
 		counter_out,
-		increment,
 		overflow,
 		clk,
 		reset
@@ -30,7 +29,6 @@ module COUNTER (
 	parameter RESOLUTION=64;
 	input wire [RESOLUTION-1:0] counter_max;
 	output reg [RESOLUTION-1:0] counter_out;
-	input wire [RESOLUTION-1:0] increment;
 	output wire overflow;
 	input wire clk;
 	input wire reset;
@@ -40,7 +38,7 @@ module COUNTER (
 	begin
 		if(~_reset) begin
 			if (counter_out < counter_max)
-				counter_out <= counter_out + increment;
+				counter_out <= counter_out + 1;
 		end else begin
 			counter_out <= 0;
 		end
